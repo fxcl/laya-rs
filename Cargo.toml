@@ -1,0 +1,36 @@
+[package]
+name = "laya-rs"
+version = "0.3.4"
+edition = "2021"
+description = "Fast, non-autoregressive System 1 decision engine with calibrated probabilities (Rust port of the laya package)"
+license = "Apache-2.0"
+repository = "https://github.com/fxcl/laya-rs"
+readme = "README.md"
+
+[lib]
+name = "laya_rs"
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+candle-core = "0.11"
+candle-nn = "0.11"
+hf-hub = "0.4"
+indexmap = "2"
+regex = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+tokenizers = "0.23"
+
+[dependencies.pyo3]
+version = "0.29"
+optional = true
+
+[features]
+default = []
+# Builds the `laya_rs` extension module (maturin). Off by default so `cargo test`
+# never needs a Python toolchain.
+python = ["dep:pyo3", "pyo3/extension-module"]
+# GPU backends. Off by default: they pull in large native toolchains and most callers
+# only need CPU. `cargo build --features metal` on macOS, `--features cuda` on Linux/Windows.
+cuda = ["candle-core/cuda"]
+metal = ["candle-core/metal"]
